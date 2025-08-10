@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-console-white;
+  }
+
+  body {
+    @apply bg-console-black text-console-white font-mono;
+    font-family: 'Courier New', monospace;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-console-black;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-console-gray;
+    border: 1px solid #ffffff;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-console-white;
+  }
+}
+
+@layer components {
+  .console-button {
+    @apply px-4 py-2 border border-console-white bg-transparent text-console-white hover:bg-console-white hover:text-console-black transition-colors duration-150;
+  }
+
+  .console-panel {
+    @apply border border-console-white p-4 bg-console-black;
+  }
+
+  .console-input {
+    @apply w-full px-3 py-2 bg-console-black border border-console-white text-console-white placeholder-console-gray focus:outline-none focus:border-console-white;
+  }
+
+  .metric-box {
+    @apply border border-console-white p-3 flex flex-col;
+  }
+
+  .progress-bar {
+    @apply h-2 bg-console-black border border-console-white relative overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply absolute top-0 left-0 h-full bg-console-white transition-all duration-300;
+  }
+}
