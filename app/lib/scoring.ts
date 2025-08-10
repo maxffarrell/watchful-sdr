@@ -8,17 +8,18 @@ export function calculateLeadScore(
   const BANT_WEIGHT = 0.35
   const MEDDIC_WEIGHT = 0.65
   
-  const bantAvg = Object.values(bantScores).reduce((a, b) => a + b, 0) / 4
-  const meddicAvg = Object.values(meddicScores).reduce((a, b) => a + b, 0) / 6
+  // Convert 0-10 scores to percentages for calculation
+  const bantAvg = Object.values(bantScores).reduce((a, b) => a + b, 0) / 4 * 10
+  const meddicAvg = Object.values(meddicScores).reduce((a, b) => a + b, 0) / 6 * 10
   
   const avgConfidence = confidenceScores.reduce((sum, c) => sum + c.confidence, 0) / confidenceScores.length
   const confidenceFactor = Math.pow(avgConfidence, 0.5)
   
-  const stageMultiplier = 1.2
+  const stageMultiplier = 1.0
   
   const leadScore = (BANT_WEIGHT * bantAvg + MEDDIC_WEIGHT * meddicAvg) * confidenceFactor * stageMultiplier
   
-  return Math.round(leadScore)
+  return Math.round(Math.min(100, leadScore))
 }
 
 export function identifyLowestConfidenceMetrics(
@@ -33,7 +34,7 @@ export function identifyLowestConfidenceMetrics(
 export function calculateAccuracy(
   aiScore: number,
   humanScore: number,
-  threshold: number = 10
+  threshold: number = 2
 ): boolean {
   return Math.abs(aiScore - humanScore) <= threshold
 }
@@ -47,32 +48,32 @@ export function generateMockScores(): {
   const meddicMetrics = ['metrics', 'economicBuyer', 'decisionCriteria', 'decisionProcess', 'identifyPain', 'champion']
   
   const bant: BANTScore = {
-    budget: Math.floor(Math.random() * 100),
-    authority: Math.floor(Math.random() * 100),
-    need: Math.floor(Math.random() * 100),
-    timeline: Math.floor(Math.random() * 100),
+    budget: Math.floor(Math.random() * 11), // 0-10
+    authority: Math.floor(Math.random() * 11),
+    need: Math.floor(Math.random() * 11),
+    timeline: Math.floor(Math.random() * 11),
   }
   
   const meddic: MEDDICScore = {
-    metrics: Math.floor(Math.random() * 100),
-    economicBuyer: Math.floor(Math.random() * 100),
-    decisionCriteria: Math.floor(Math.random() * 100),
-    decisionProcess: Math.floor(Math.random() * 100),
-    identifyPain: Math.floor(Math.random() * 100),
-    champion: Math.floor(Math.random() * 100),
+    metrics: Math.floor(Math.random() * 11), // 0-10
+    economicBuyer: Math.floor(Math.random() * 11),
+    decisionCriteria: Math.floor(Math.random() * 11),
+    decisionProcess: Math.floor(Math.random() * 11),
+    identifyPain: Math.floor(Math.random() * 11),
+    champion: Math.floor(Math.random() * 11),
   }
   
   const confidence: MetricConfidence[] = [
     ...bantMetrics.map(metric => ({
       metric,
       score: bant[metric as keyof BANTScore],
-      confidence: Math.random(),
+      confidence: Math.random() * 0.6 + 0.2, // 0.2 to 0.8 for more realistic low confidence scores
       aiGenerated: true,
     })),
     ...meddicMetrics.map(metric => ({
       metric,
       score: meddic[metric as keyof MEDDICScore],
-      confidence: Math.random(),
+      confidence: Math.random() * 0.6 + 0.2,
       aiGenerated: true,
     })),
   ]

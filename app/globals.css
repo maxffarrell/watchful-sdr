@@ -3,56 +3,56 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-console-white;
-  }
+    * {
+        @apply border-console-light;
+    }
 
-  body {
-    @apply bg-console-black text-console-white font-mono;
-    font-family: 'Courier New', monospace;
-  }
+    body {
+        @apply bg-console-dark text-console-light font-mono;
+        font-family: "Courier New", monospace;
+    }
 
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-  ::-webkit-scrollbar-track {
-    @apply bg-console-black;
-  }
+    ::-webkit-scrollbar-track {
+        @apply bg-console-dark;
+    }
 
-  ::-webkit-scrollbar-thumb {
-    @apply bg-console-gray;
-    border: 1px solid #ffffff;
-  }
+    ::-webkit-scrollbar-thumb {
+        @apply bg-console-gray;
+        border: 1px solid rgb(188, 215, 82);
+    }
 
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-console-white;
-  }
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-console-light;
+    }
 }
 
 @layer components {
-  .console-button {
-    @apply px-4 py-2 border border-console-white bg-transparent text-console-white hover:bg-console-white hover:text-console-black transition-colors duration-150;
-  }
+    .console-button {
+        @apply px-4 py-2 border border-console-light bg-transparent text-console-light hover:bg-console-light hover:text-console-dark transition-colors duration-150;
+    }
 
-  .console-panel {
-    @apply border border-console-white p-4 bg-console-black;
-  }
+    .console-panel {
+        @apply border border-console-light p-4 bg-console-darker;
+    }
 
-  .console-input {
-    @apply w-full px-3 py-2 bg-console-black border border-console-white text-console-white placeholder-console-gray focus:outline-none focus:border-console-white;
-  }
+    .console-input {
+        @apply w-full px-3 py-2 bg-console-dark border border-console-light text-console-light bg-console-dark focus:outline-none focus:border-console-light focus:ring-1 focus:ring-console-light;
+    }
 
-  .metric-box {
-    @apply border border-console-white p-3 flex flex-col;
-  }
+    .metric-box {
+        @apply border border-console-light p-3 flex flex-col;
+    }
 
-  .progress-bar {
-    @apply h-2 bg-console-black border border-console-white relative overflow-hidden;
-  }
+    .progress-bar {
+        @apply h-2 bg-console-dark border border-console-light relative overflow-hidden;
+    }
 
-  .progress-fill {
-    @apply absolute top-0 left-0 h-full bg-console-white transition-all duration-300;
-  }
+    .progress-fill {
+        @apply absolute top-0 left-0 h-full bg-console-light transition-all duration-300;
+    }
 }

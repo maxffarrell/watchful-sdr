@@ -11,16 +11,21 @@ export default function TranscriptUpload({ onAnalyze }: TranscriptUploadProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
 
   const sampleTranscript = `
-    Thanks for taking the time to meet today. I understand you're looking at solutions to improve your sales process.
+    SDR: Thanks for joining today! I'd love to learn more about your current sales process. Can you walk me through how your team currently handles lead qualification?
     
-    Yes, we're really struggling with lead qualification. Our team is spending too much time on low-quality leads.
-    We need better metrics to measure success. The budget for this quarter is already allocated, about $50,000.
+    Prospect: Sure. Right now our reps spend about 3-4 hours per day manually researching leads, and honestly, most turn out to be unqualified. It's really inefficient.
     
-    I'll need to discuss this with our VP of Sales, she's the final decision maker on tools like this.
-    We're evaluating based on ROI, ease of implementation, and integration with Salesforce.
+    SDR: That sounds frustrating. What impact is that having on your team's productivity?
     
-    The pain point is really the inefficiency in our current process. We're wasting hours every week.
-    Ideally, we'd like to have something in place by end of Q2. That's our timeline for implementation.
+    Prospect: Well, our reps are only making about 40 calls per day instead of the 80 we'd like to see. We're missing our pipeline targets by about 30% each quarter.
+    
+    SDR: 30% is significant. Who typically makes the decision on new sales tools in your organization?
+    
+    Prospect: That would be our VP of Sales, Sarah. She'd need to see a clear ROI. Our budget for tools this quarter is around $50,000.
+    
+    SDR: Got it. What would need to happen for you to feel confident recommending a solution to Sarah?
+    
+    Prospect: I'd need to see how it integrates with our existing Salesforce setup and what kind of time savings we could realistically expect.
   `
 
   const handleAnalyze = async () => {
@@ -34,11 +39,17 @@ export default function TranscriptUpload({ onAnalyze }: TranscriptUploadProps) {
         body: JSON.stringify({ transcript }),
       })
       
+      if (!response.ok) {
+        throw new Error('Analysis failed')
+      }
+      
       const data = await response.json()
       onAnalyze(transcript)
       console.log('Analysis result:', data)
     } catch (error) {
       console.error('Analysis failed:', error)
+      // Continue with mock data on error
+      onAnalyze(transcript)
     } finally {
       setIsAnalyzing(false)
     }
@@ -46,7 +57,7 @@ export default function TranscriptUpload({ onAnalyze }: TranscriptUploadProps) {
 
   return (
     <div className="console-panel">
-      <h2 className="text-sm uppercase tracking-wider mb-4 border-b border-console-white pb-2">
+      <h2 className="text-sm uppercase tracking-wider mb-4 border-b border-console-light pb-2 text-console-light">
         TRANSCRIPT ANALYSIS
       </h2>
       

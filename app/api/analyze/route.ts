@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { analyzeTranscript } from '@/app/lib/ai-analyzer'
+import { analyzeTranscriptWithGemini } from '@/app/lib/gemini'
 import { calculateLeadScore } from '@/app/lib/scoring'
 
 export async function POST(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    const analysis = await analyzeTranscript(transcript)
+    const analysis = await analyzeTranscriptWithGemini(transcript)
     const leadScore = calculateLeadScore(
       analysis.bantScores,
       analysis.meddicScores,

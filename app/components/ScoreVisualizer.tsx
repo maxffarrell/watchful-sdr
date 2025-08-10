@@ -12,7 +12,7 @@ export default function ScoreVisualizer({ bantScores, meddicScores, overallScore
   return (
     <div className="console-panel">
       <div className="mb-6">
-        <h2 className="text-sm uppercase tracking-wider mb-4 border-b border-console-white pb-2">
+        <h2 className="text-sm uppercase tracking-wider mb-4 border-b border-console-light pb-2 text-console-light">
           LEAD SCORE ANALYSIS
         </h2>
         <div className="text-4xl font-medium text-center py-4">
@@ -29,10 +29,10 @@ export default function ScoreVisualizer({ bantScores, meddicScores, overallScore
               <div key={key}>
                 <div className="flex justify-between text-xs mb-1">
                   <span className="capitalize">{key}</span>
-                  <span>{value}</span>
+                  <span>{value}/10</span>
                 </div>
                 <div className="progress-bar h-1">
-                  <div className="progress-fill" style={{ width: `${value}%` }} />
+                  <div className="progress-fill" style={{ width: `${(value / 10) * 100}%` }} />
                 </div>
               </div>
             ))}
@@ -48,10 +48,10 @@ export default function ScoreVisualizer({ bantScores, meddicScores, overallScore
                   <span className="capitalize text-xs">
                     {key.replace(/([A-Z])/g, ' $1').trim()}
                   </span>
-                  <span>{value}</span>
+                  <span>{value}/10</span>
                 </div>
                 <div className="progress-bar h-1">
-                  <div className="progress-fill" style={{ width: `${value}%` }} />
+                  <div className="progress-fill" style={{ width: `${(value / 10) * 100}%` }} />
                 </div>
               </div>
             ))}
