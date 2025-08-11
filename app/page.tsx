@@ -295,11 +295,7 @@ export default function Dashboard() {
             <ROICalculator />
           </div>
           
-          <WorkflowAutomation 
-            bantScores={scores.bant}
-            meddicScores={scores.meddic}
-            insights={insights}
-          />
+          <WorkflowAutomation />
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <LeadRouting />
