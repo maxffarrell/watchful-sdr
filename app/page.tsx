@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import MetricCard from './components/MetricCard'
-import ValidationCard from './components/ValidationCard'
+import ValidationForm from './components/ValidationForm'
 import InsightsPanel from './components/InsightsPanel'
 import GamificationBar from './components/GamificationBar'
 import ScoreVisualizer from './components/ScoreVisualizer'
@@ -68,27 +68,34 @@ export default function Dashboard() {
     setValidationQueue(lowestConfidence)
   }, [scores])
 
-  const handleValidation = (metricName: string, score: number, reasoning?: string) => {
-    setValidationQueue(prev => prev.filter(m => m.metric !== metricName))
+  const handleValidateAll = (validations: Array<{metric: string, score: number, reasoning?: string}>) => {
+    console.log("🎯 Processing bulk validation:", validations)
+    
+    // Clear validation queue
+    setValidationQueue([])
     
     // Activity-based gamification - points for completion, not accuracy
     setProfile(prev => ({
       ...prev,
-      points: prev.points + 15, // Standard points for completing validation
-      totalValidations: prev.totalValidations + 1,
-      correctValidations: prev.correctValidations + 1, // All validations count as "correct"
+      points: prev.points + (15 * validations.length), // 15 points per validation
+      totalValidations: prev.totalValidations + validations.length,
+      correctValidations: prev.correctValidations + validations.length, // All validations count as "correct"
       accuracy: 100, // Always 100% for activity completion
-      streak: prev.streak + 1,
+      streak: prev.streak + validations.length,
     }))
 
+    // Update scores with human validations
     setScores(prev => ({
       ...prev,
-      confidence: prev.confidence.map(m => 
-        m.metric === metricName 
-          ? { ...m, humanValidated: true, humanScore: score }
+      confidence: prev.confidence.map(m => {
+        const validation = validations.find(v => v.metric === m.metric)
+        return validation 
+          ? { ...m, humanValidated: true, humanScore: validation.score }
           : m
-      ),
+      }),
     }))
+    
+    console.log("✅ Bulk validation completed successfully")
   }
 
   const handleTranscriptAnalyzed = async (transcript: string) => {
@@ -276,42 +283,24 @@ export default function Dashboard() {
 
         {/* Right Column - Validations */}
         <div className="space-y-6">
-          <div>
-            <h2 className="section-header mb-4">
-              HUMAN VALIDATION REQUIRED [{validationQueue.length}/5]
-            </h2>
-            <div className="text-xs text-console-gray mb-4 p-3 border border-console-gray bg-console-dark bg-opacity-50 rounded">
-              <span className="text-console-light font-medium">Review AI scores</span> for the {validationQueue.length} lowest confidence metrics to improve model accuracy
+          {validationQueue.length > 0 ? (
+            <ValidationForm
+              metrics={validationQueue}
+              onValidateAll={handleValidateAll}
+            />
+          ) : (
+            <div className="console-panel text-center py-12 text-console-gray border-2 border-dashed border-console-light bg-console-light bg-opacity-5">
+              <div className="text-3xl mb-3 text-console-light">✓</div>
+              <div className="text-console-light text-base font-medium mb-2">All validations complete!</div>
+              <div className="text-xs mb-4 text-console-gray">+75 points earned • Model accuracy improved</div>
+              <button 
+                onClick={() => setShowUpload(true)}
+                className="console-button text-xs px-6 py-3"
+              >
+                ANALYZE NEXT CALL
+              </button>
             </div>
-            
-            {validationQueue.length > 0 ? (
-              <div className="space-y-4">
-                {validationQueue.map((metric, index) => (
-                  <div key={metric.metric} className="relative">
-                    <div className="absolute -left-8 top-4 text-console-gray text-xs">
-                      {index + 1}.
-                    </div>
-                    <ValidationCard
-                      metric={metric}
-                      onValidate={(score, reasoning) => handleValidation(metric.metric, score, reasoning)}
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="console-panel text-center py-12 text-console-gray border-2 border-dashed border-console-light bg-console-light bg-opacity-5">
-                <div className="text-3xl mb-3 text-console-light">✓</div>
-                <div className="text-console-light text-base font-medium mb-2">All validations complete!</div>
-                <div className="text-xs mb-4 text-console-gray">+{profile.streak * 5} bonus points earned • Model accuracy improved</div>
-                <button 
-                  onClick={() => setShowUpload(true)}
-                  className="console-button text-xs px-6 py-3"
-                >
-                  ANALYZE NEXT CALL
-                </button>
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>
