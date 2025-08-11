@@ -9,7 +9,7 @@
 
     body {
         @apply bg-console-dark text-console-light font-mono;
-        font-family: "Courier New", monospace;
+        font-family: "Geist", monospace;
     }
 
     ::-webkit-scrollbar {
@@ -54,5 +54,13 @@
 
     .progress-fill {
         @apply absolute top-0 left-0 h-full bg-console-light transition-all duration-300;
+    }
+
+    .leaderboard-item {
+        @apply transition-all duration-200 hover:bg-opacity-20;
+    }
+
+    .metric-card-hover {
+        @apply transition-all duration-200 hover:border-console-light hover:shadow-lg;
     }
 }
