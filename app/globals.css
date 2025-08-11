@@ -37,11 +37,20 @@
     }
 
     .console-panel {
-        @apply border border-console-light p-4 bg-console-darker transition-all duration-200;
+        @apply border border-console-light p-4 bg-console-darker transition-all duration-200 overflow-hidden;
     }
     
     .console-panel:hover {
         @apply border-console-light shadow-sm;
+    }
+    
+    .text-truncate {
+        @apply truncate;
+    }
+    
+    .text-wrap-break {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
     .console-input {

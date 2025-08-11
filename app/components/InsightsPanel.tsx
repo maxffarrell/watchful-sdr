@@ -25,8 +25,8 @@ export default function InsightsPanel({ insights, revenueImpact, priorityFocus }
           <ul className="space-y-3">
             {insights.map((insight, index) => (
               <li key={index} className="flex items-start">
-                <span className="text-console-light mr-3 text-lg">→</span>
-                <span className="text-sm">{insight}</span>
+                <span className="text-console-light mr-3 text-lg flex-shrink-0">→</span>
+                <span className="text-sm text-wrap-break">{insight}</span>
               </li>
             ))}
           </ul>
@@ -34,7 +34,7 @@ export default function InsightsPanel({ insights, revenueImpact, priorityFocus }
         
         <div className="mt-4 pt-4 border-t border-console-gray">
           <h3 className="text-xs uppercase text-console-gray mb-2">PRIORITY FOCUS:</h3>
-          <p className="text-sm">{priorityFocus || "Quantify false alarm costs and demonstrate Quill's ROI through guard efficiency gains"}</p>
+          <p className="text-sm text-wrap-break">{priorityFocus || "Quantify false alarm costs and demonstrate Watchful's ROI through guard efficiency gains"}</p>
         </div>
       </div>
     </div>

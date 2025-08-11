@@ -38,6 +38,8 @@ export default function TranscriptUpload({ onAnalyze, isAnalyzing: externalAnaly
     SDR: Got it. If you could eliminate 87% of those false alarms while ensuring you never miss a real threat, what would that mean for your team?
     
     Prospect: Game changer. We could actually focus on real security work instead of chasing shadows. But I'd need to see proof it actually works and integrates with our existing Milestone system.
+    
+    SDR: Absolutely. Let me show you how Watchful's AI integrates directly with Milestone and reduces false alarms by exactly that percentage. When would be a good time for a 30-minute technical demo with your Head of Security?
   `
 
   const handleAnalyze = async () => {

@@ -188,7 +188,7 @@ export default function Dashboard() {
     <div className="min-h-screen p-6 bg-console-dark">
       <header className="mb-8 border-b border-console-light pb-4">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl tracking-wider text-console-light">QUILL // SDR INTELLIGENCE</h1>
+          <h1 className="text-2xl tracking-wider text-console-light">WATCHFUL // SDR INTELLIGENCE</h1>
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setShowUpload(!showUpload)} 
@@ -280,8 +280,8 @@ export default function Dashboard() {
             <h2 className="section-header mb-4">
               HUMAN VALIDATION REQUIRED [{validationQueue.length}/5]
             </h2>
-            <div className="text-xs text-console-gray mb-4 p-2 border border-console-gray bg-console-dark bg-opacity-50">
-              <span className="text-console-light">Review AI scores</span> for the {validationQueue.length} lowest confidence metrics to improve accuracy
+            <div className="text-xs text-console-gray mb-4 p-3 border border-console-gray bg-console-dark bg-opacity-50 rounded">
+              <span className="text-console-light font-medium">Review AI scores</span> for the {validationQueue.length} lowest confidence metrics to improve model accuracy
             </div>
             
             {validationQueue.length > 0 ? (
@@ -299,13 +299,13 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <div className="console-panel text-center py-12 text-console-gray">
-                <div className="text-2xl mb-3">✓</div>
-                <div className="text-console-light text-sm">All validations complete!</div>
-                <div className="text-xs mt-2">+{profile.streak * 5} bonus points earned</div>
+              <div className="console-panel text-center py-12 text-console-gray border-2 border-dashed border-console-light bg-console-light bg-opacity-5">
+                <div className="text-3xl mb-3 text-console-light">✓</div>
+                <div className="text-console-light text-base font-medium mb-2">All validations complete!</div>
+                <div className="text-xs mb-4 text-console-gray">+{profile.streak * 5} bonus points earned • Model accuracy improved</div>
                 <button 
                   onClick={() => setShowUpload(true)}
-                  className="console-button mt-4 text-xs"
+                  className="console-button text-xs px-6 py-3"
                 >
                   ANALYZE NEXT CALL
                 </button>

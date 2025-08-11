@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'QUILL // SDR Intelligence',
+  title: 'WATCHFUL // SDR Intelligence',
   description: 'AI-powered security sales call analysis and discovery optimization platform',
 }
 

@@ -73,13 +73,13 @@ export function generateMockScores(): {
     ...bantMetrics.map(metric => ({
       metric,
       score: bant[metric as keyof BANTScore],
-      confidence: Math.random() * 0.6 + 0.2, // 0.2 to 0.8 for more realistic low confidence scores
+      confidence: Math.random() * 0.4 + 0.1, // 0.1 to 0.5 for more conservative confidence scores
       aiGenerated: true,
     })),
     ...meddicMetrics.map(metric => ({
       metric,
       score: meddic[metric as keyof MEDDICScore],
-      confidence: Math.random() * 0.6 + 0.2,
+      confidence: Math.random() * 0.4 + 0.1, // More conservative confidence range
       aiGenerated: true,
     })),
   ]

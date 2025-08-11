@@ -148,11 +148,11 @@ export default function SDRStats({
                 }`}>
                   #{person.rank}
                 </span>
-                <span className={`text-sm ${
+                <span className={`text-sm text-truncate ${
                   person.isCurrentUser ? 'text-console-light font-medium' : 'text-console-gray'
                 }`}>
                   {person.name}
-                  {person.isCurrentUser && <span className="ml-2 text-xs">(You)</span>}
+                  {person.isCurrentUser && <span className="ml-1 text-xs">(You)</span>}
                 </span>
               </div>
               <div className="flex items-center gap-4 text-xs">

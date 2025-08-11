@@ -75,10 +75,30 @@ MEDDIC SCORING:
 - Champion (0-10): Internal advocate strength (10 = strong champion committed)
 
 CONFIDENCE SCORING:
-Rate your confidence (0.0-1.0) in each score based on how explicitly the information was discussed.
-Low confidence (0.2-0.4) = implied but not stated
-Medium confidence (0.5-0.7) = mentioned but not explored
-High confidence (0.8-1.0) = explicitly discussed and confirmed
+Be CONSERVATIVE with confidence ratings. Rate your confidence (0.0-1.0) based on how explicitly and thoroughly the information was discussed:
+- 0.1-0.3: Information implied or briefly mentioned
+- 0.4-0.6: Information discussed but lacks detail or confirmation
+- 0.7-0.8: Information explicitly discussed with some specifics
+- 0.9-1.0: Information thoroughly explored with full confirmation (rare)
+
+SDR PERFORMANCE ANALYSIS:
+Analyze the SDR's call execution and rate (0-10):
+
+- nextStepsClarity (0-10): How clearly did the SDR define next steps?
+  * 0-3: No next steps mentioned or very vague
+  * 4-6: General next steps mentioned but unclear timing/ownership
+  * 7-8: Clear next steps with timing but missing some details
+  * 9-10: Crystal clear next steps with timing, ownership, and mutual commitment
+
+- objectionHandling (0-10): How effectively did the SDR handle concerns/objections?
+  * 0-3: Ignored objections or gave weak responses
+  * 4-6: Acknowledged objections but didn't fully address them
+  * 7-8: Addressed objections with relevant responses
+  * 9-10: Turned objections into selling opportunities with compelling responses
+
+- talkRatio (0-100): Estimate percentage of time SDR was talking (ideal: 30-40%)
+- questionsAsked: Count of distinct discovery questions asked
+- painPointsUncovered: Number of specific business pain points identified
 
 INSIGHTS GENERATION:
 Provide exactly 3 actionable next steps that are:
@@ -180,7 +200,7 @@ Respond in JSON format:
       meddicScores: parsed.meddic,
       confidenceScores,
       insights: parsed.insights,
-      priorityFocus: parsed.priorityFocus || "Quantify false alarm costs and demonstrate Quill's ROI through guard efficiency gains",
+      priorityFocus: parsed.priorityFocus || "Quantify false alarm costs and demonstrate Watchful's ROI through guard efficiency gains",
       sdrStats: parsed.sdrStats || {
         talkRatio: 35,
         questionsAsked: 8,
@@ -255,7 +275,7 @@ function generateFallbackScores(): {
 
   const insights = [
     'Ask: "How do you currently measure the cost of false alarms on your operations?"',
-    "Schedule technical demo showing Quill's integration with existing camera systems",
+    "Schedule technical demo showing Watchful's integration with existing camera systems",
     "Send case study of similar facility that reduced false alarms by 87%",
   ];
   
