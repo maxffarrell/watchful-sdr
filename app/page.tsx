@@ -233,6 +233,7 @@ export default function Dashboard() {
               bantScores={scores.bant}
               meddicScores={scores.meddic}
               overallScore={overallScore}
+              validationQueue={validationQueue.map(m => m.metric)}
             />
           </div>
           
