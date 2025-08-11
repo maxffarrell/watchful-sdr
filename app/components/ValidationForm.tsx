@@ -47,7 +47,7 @@ export default function ValidationForm({ metrics, onValidateAll }: ValidationFor
           HUMAN VALIDATION REQUIRED [{completedCount}/5]
         </h2>
         <div className="text-xs text-console-gray mb-6 p-3 border border-console-gray bg-console-dark bg-opacity-50 rounded">
-          <span className="text-console-light font-medium">Review AI scores</span> for the 5 lowest confidence metrics to improve model accuracy
+          <span className="text-console-light font-medium">Review AI scores</span> where the model has the lowest confidence in its scoring accuracy. Low confidence doesn't mean low scores - it means uncertainty.
         </div>
       </div>
 

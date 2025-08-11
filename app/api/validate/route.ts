@@ -33,7 +33,8 @@ export async function POST(request: NextRequest) {
         : 'Thank you for the correction. This helps improve our model.',
     })
   } catch (error) {
-    console.error('Validation error:', error)
+    const err = error as Error
+    console.error('Validation error:', err)
     return NextResponse.json(
       { error: 'Failed to process validation' },
       { status: 500 }

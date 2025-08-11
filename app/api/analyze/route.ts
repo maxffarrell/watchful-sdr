@@ -35,8 +35,9 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('❌ API Analysis error:', error)
-    console.error('❌ API Error stack:', error.stack)
+    const err = error as Error
+    console.error('❌ API Analysis error:', err)
+    console.error('❌ API Error stack:', err.stack)
     return NextResponse.json(
       { error: 'Failed to analyze transcript' },
       { status: 500 }

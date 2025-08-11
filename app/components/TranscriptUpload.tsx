@@ -63,9 +63,10 @@ export default function TranscriptUpload({ onAnalyze, isAnalyzing: externalAnaly
       console.log("📥 onAnalyze result:", result)
       console.log("✅ TranscriptUpload: onAnalyze completed successfully")
     } catch (error) {
-      console.error('❌ TranscriptUpload: Analysis failed:', error)
-      console.error('❌ Error stack:', error.stack)
-      console.error('❌ Error details:', JSON.stringify(error, null, 2))
+      const err = error as Error
+      console.error('❌ TranscriptUpload: Analysis failed:', err)
+      console.error('❌ Error stack:', err.stack)
+      console.error('❌ Error details:', JSON.stringify(err, null, 2))
     }
     console.log("=== TRANSCRIPT UPLOAD DEBUG END ===")
   }

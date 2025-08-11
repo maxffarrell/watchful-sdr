@@ -10,6 +10,7 @@ import TranscriptUpload from './components/TranscriptUpload'
 import SDRStats from './components/SDRStats'
 import { MetricConfidence, SDRProfile } from './types'
 import { generateMockScores, calculateLeadScore, identifyLowestConfidenceMetrics } from './lib/scoring'
+import { logError, getErrorMessage } from './lib/error-utils'
 
 export default function Dashboard() {
   console.log("=== DASHBOARD COMPONENT MOUNT ===")
@@ -159,11 +160,8 @@ export default function Dashboard() {
       console.log("🎉 Successfully updated UI with Gemini results")
       
     } catch (error) {
-      console.error('❌ MAJOR ERROR: Failed to analyze with Gemini:', error)
-      console.error('❌ Error type:', typeof error)
-      console.error('❌ Error message:', error.message)
-      console.error('❌ Error stack:', error.stack)
-      console.error('❌ Full error object:', JSON.stringify(error, null, 2))
+      logError('TRANSCRIPT_ANALYSIS', error)
+      console.error('❌ MAJOR ERROR: Failed to analyze with Gemini:', getErrorMessage(error))
       
       // Fallback to mock scores if Gemini fails
       console.log("⚠️ Using mock scores as fallback...")

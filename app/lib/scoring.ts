@@ -70,18 +70,40 @@ export function generateMockScores(): {
   }
   
   const confidence: MetricConfidence[] = [
-    ...bantMetrics.map(metric => ({
-      metric,
-      score: bant[metric as keyof BANTScore],
-      confidence: Math.random() * 0.4 + 0.1, // 0.1 to 0.5 for more conservative confidence scores
-      aiGenerated: true,
-    })),
-    ...meddicMetrics.map(metric => ({
-      metric,
-      score: meddic[metric as keyof MEDDICScore],
-      confidence: Math.random() * 0.4 + 0.1, // More conservative confidence range
-      aiGenerated: true,
-    })),
+    ...bantMetrics.map(metric => {
+      const score = bant[metric as keyof BANTScore]
+      // Generate confidence based on score clarity, not score value
+      // Low scores (0-3) can have high confidence if clearly absent
+      // High scores (7-10) can have low confidence if ambiguous
+      let confidenceRange = Math.random() * 0.6 + 0.2 // 0.2 to 0.8 base range
+      
+      // Extreme scores (0-2 or 8-10) might have higher confidence due to clarity
+      if (score <= 2 || score >= 8) {
+        confidenceRange = Math.random() * 0.3 + 0.5 // 0.5 to 0.8 for extreme scores
+      }
+      
+      return {
+        metric,
+        score,
+        confidence: confidenceRange,
+        aiGenerated: true,
+      }
+    }),
+    ...meddicMetrics.map(metric => {
+      const score = meddic[metric as keyof MEDDICScore]
+      let confidenceRange = Math.random() * 0.6 + 0.2
+      
+      if (score <= 2 || score >= 8) {
+        confidenceRange = Math.random() * 0.3 + 0.5
+      }
+      
+      return {
+        metric,
+        score,
+        confidence: confidenceRange,
+        aiGenerated: true,
+      }
+    }),
   ]
   
   return { bant, meddic, confidence }

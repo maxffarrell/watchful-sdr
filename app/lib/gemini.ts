@@ -75,11 +75,20 @@ MEDDIC SCORING:
 - Champion (0-10): Internal advocate strength (10 = strong champion committed)
 
 CONFIDENCE SCORING:
-Be CONSERVATIVE with confidence ratings. Rate your confidence (0.0-1.0) based on how explicitly and thoroughly the information was discussed:
-- 0.1-0.3: Information implied or briefly mentioned
-- 0.4-0.6: Information discussed but lacks detail or confirmation
-- 0.7-0.8: Information explicitly discussed with some specifics
-- 0.9-1.0: Information thoroughly explored with full confirmation (rare)
+Rate your confidence (0.0-1.0) in the ACCURACY of your score, NOT the score value itself.
+
+IMPORTANT: High confidence can be given to LOW scores when there's clear evidence of absence.
+
+Examples:
+- Timeline score 0/10 with 0.9 confidence = "I'm very confident no timeline was discussed"
+- Budget score 2/10 with 0.8 confidence = "I'm confident only vague budget mentions occurred"  
+- Authority score 8/10 with 0.4 confidence = "High score but unsure if I interpreted correctly"
+
+Confidence Guidelines:
+- 0.1-0.3: Unclear transcript, hard to assess, ambiguous evidence
+- 0.4-0.6: Some evidence but could be interpreted differently
+- 0.7-0.8: Clear evidence supports the score I assigned
+- 0.9-1.0: Extremely clear evidence, no doubt about the score
 
 SDR PERFORMANCE ANALYSIS:
 Analyze the SDR's call execution and rate (0-10):
@@ -210,14 +219,15 @@ Respond in JSON format:
       }
     };
   } catch (error) {
+    const err = error as Error
     console.error("❌❌❌ GEMINI API MAJOR ERROR ❌❌❌");
-    console.error("❌ Error object:", error);
-    console.error("❌ Error type:", typeof error);
-    console.error("❌ Error name:", error.name);
-    console.error("❌ Error message:", error.message);
-    console.error("❌ Error stack:", error.stack);
-    console.error("❌ Error cause:", error.cause);
-    console.error("❌ Full error JSON:", JSON.stringify(error, null, 2));
+    console.error("❌ Error object:", err);
+    console.error("❌ Error type:", typeof err);
+    console.error("❌ Error name:", err.name);
+    console.error("❌ Error message:", err.message);
+    console.error("❌ Error stack:", err.stack);
+    console.error("❌ Error cause:", (err as any).cause);
+    console.error("❌ Full error JSON:", JSON.stringify(err, null, 2));
     console.log("⚠️ Falling back to mock data");
     // Fallback to mock data
     const fallback = generateFallbackScores();
