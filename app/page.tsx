@@ -209,22 +209,23 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Single Column SDR Stats Section */}
+      {/* Top Section - SDR Stats Left, Leaderboard Right */}
       <SDRStats 
         {...sdrStats}
         callsAnalyzed={callsAnalyzed}
         weeklyGoal={weeklyGoal}
+        teamLeaderboard={teamLeaderboard}
       />
 
       {/* Two Column Layout - Lead Score/Insights Left, Validations Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         
         {/* Left Column - Lead Score, Analysis & Insights */}
         <div className="space-y-6">
           
           {/* Discovery Score Card */}
           <div className="console-panel">
-            <h2 className="text-sm uppercase tracking-wider mb-4 border-b border-console-light pb-2 text-console-light">
+            <h2 className="section-header mb-4">
               LEAD QUALIFICATION SCORE
             </h2>
             <div className="text-center py-6">
@@ -271,35 +272,16 @@ export default function Dashboard() {
             priorityFocus={priorityFocus} 
           />
           
-          {/* Team Leaderboard - Smaller, at bottom */}
-          <div className="console-panel">
-            <h3 className="text-xs uppercase tracking-wider mb-3 text-console-gray">
-              Team Rankings
-            </h3>
-            <div className="space-y-1">
-              {teamLeaderboard.slice(0, 3).map((person) => (
-                <div 
-                  key={person.name}
-                  className={`flex justify-between items-center py-1 px-2 text-xs ${
-                    person.isCurrentUser ? 'text-console-light font-medium' : 'text-console-gray'
-                  }`}
-                >
-                  <span>#{person.rank} {person.name}</span>
-                  <span>{person.points}pts</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Right Column - Validations */}
         <div className="space-y-6">
           <div>
-            <h2 className="text-sm uppercase tracking-wider mb-4 text-console-light border-b border-console-light pb-2">
-              HUMAN VALIDATION REQUIRED [{validationQueue.length}]
+            <h2 className="section-header mb-4">
+              HUMAN VALIDATION REQUIRED [{validationQueue.length}/5]
             </h2>
-            <div className="text-xs text-console-gray mb-4">
-              Review AI scores for the {validationQueue.length} lowest confidence metrics
+            <div className="text-xs text-console-gray mb-4 p-2 border border-console-gray bg-console-dark bg-opacity-50">
+              <span className="text-console-light">Review AI scores</span> for the {validationQueue.length} lowest confidence metrics to improve accuracy
             </div>
             
             {validationQueue.length > 0 ? (

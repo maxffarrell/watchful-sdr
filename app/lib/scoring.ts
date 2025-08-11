@@ -24,11 +24,17 @@ export function calculateLeadScore(
 
 export function identifyLowestConfidenceMetrics(
   confidenceScores: MetricConfidence[],
-  count: number = 3
+  count: number = 5
 ): MetricConfidence[] {
-  return confidenceScores
-    .sort((a, b) => a.confidence - b.confidence)
-    .slice(0, count)
+  const sorted = confidenceScores.sort((a, b) => a.confidence - b.confidence)
+  
+  // Ensure we always have exactly the requested count
+  if (sorted.length >= count) {
+    return sorted.slice(0, count)
+  }
+  
+  // If we have fewer items than requested, return all available
+  return sorted
 }
 
 export function calculateAccuracy(

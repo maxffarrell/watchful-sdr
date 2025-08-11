@@ -37,7 +37,11 @@
     }
 
     .console-panel {
-        @apply border border-console-light p-4 bg-console-darker;
+        @apply border border-console-light p-4 bg-console-darker transition-all duration-200;
+    }
+    
+    .console-panel:hover {
+        @apply border-console-light shadow-sm;
     }
 
     .console-input {
@@ -62,5 +66,13 @@
 
     .metric-card-hover {
         @apply transition-all duration-200 hover:border-console-light hover:shadow-lg;
+    }
+    
+    .section-header {
+        @apply text-sm uppercase tracking-wider border-b border-console-light pb-2 text-console-light;
+    }
+    
+    .grid-aligned {
+        @apply grid grid-cols-1 lg:grid-cols-2 gap-6 items-start;
     }
 }
