@@ -12,6 +12,7 @@ interface ValidationFormProps {
 export default function ValidationForm({ metrics, onValidateAll }: ValidationFormProps) {
   const [scores, setScores] = useState<Record<string, number>>({})
   const [reasoning, setReasoning] = useState<Record<string, string>>({})
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const formatMetricName = (name: string) => {
     return name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())
@@ -32,6 +33,7 @@ export default function ValidationForm({ metrics, onValidateAll }: ValidationFor
       reasoning: reasoning[metric.metric]
     }))
     
+    setIsSubmitted(true)
     onValidateAll(validations)
   }
 
@@ -44,22 +46,8 @@ export default function ValidationForm({ metrics, onValidateAll }: ValidationFor
         <h2 className="section-header mb-4">
           HUMAN VALIDATION REQUIRED [{completedCount}/5]
         </h2>
-        <div className="text-xs text-console-gray mb-4 p-3 border border-console-gray bg-console-dark bg-opacity-50 rounded">
+        <div className="text-xs text-console-gray mb-6 p-3 border border-console-gray bg-console-dark bg-opacity-50 rounded">
           <span className="text-console-light font-medium">Review AI scores</span> for the 5 lowest confidence metrics to improve model accuracy
-        </div>
-        
-        {/* Progress Indicator */}
-        <div className="mb-6">
-          <div className="flex justify-between text-xs text-console-gray mb-2">
-            <span>Validation Progress</span>
-            <span>{completedCount}/5 Complete</span>
-          </div>
-          <div className="w-full bg-console-dark border border-console-light h-2">
-            <div 
-              className="h-full bg-console-light transition-all duration-300"
-              style={{ width: `${(completedCount / 5) * 100}%` }}
-            />
-          </div>
         </div>
       </div>
 
@@ -85,7 +73,7 @@ export default function ValidationForm({ metrics, onValidateAll }: ValidationFor
                     </MetricTooltip>
                   </h3>
                   <div className="text-console-gray text-xs">
-                    AI Score: {isCompleted ? `${metric.score}/10` : '--/10'} | Confidence: {(metric.confidence * 100).toFixed(0)}%
+                    AI Score: {isSubmitted ? `${metric.score}/10` : '--/10'} | Confidence: {(metric.confidence * 100).toFixed(0)}%
                   </div>
                 </div>
                 
@@ -123,14 +111,6 @@ export default function ValidationForm({ metrics, onValidateAll }: ValidationFor
                     className="console-input text-xs w-full"
                   />
                 </div>
-                
-                {/* Completion Indicator */}
-                {isCompleted && (
-                  <div className="mt-2 text-xs text-console-light flex items-center gap-1">
-                    <span>✓</span>
-                    <span>Score: {scores[metric.metric]}/10</span>
-                  </div>
-                )}
               </div>
             </div>
           )
