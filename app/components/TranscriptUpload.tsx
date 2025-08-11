@@ -71,10 +71,27 @@ export default function TranscriptUpload({ onAnalyze, isAnalyzing: externalAnaly
           <button
             onClick={handleAnalyze}
             disabled={isAnalyzing || !transcript.trim()}
-            className="console-button"
+            className={`console-button ${
+              isAnalyzing ? 'animate-fade-pulse' : ''
+            }`}
           >
             {isAnalyzing ? 'ANALYZING...' : 'ANALYZE'}
           </button>
+          
+          <style jsx>{`
+            @keyframes fade-pulse {
+              0%, 100% { 
+                opacity: 0.3;
+              }
+              50% { 
+                opacity: 1;
+              }
+            }
+            
+            .animate-fade-pulse {
+              animation: fade-pulse 1.5s ease-in-out infinite;
+            }
+          `}</style>
           <button
             onClick={() => setTranscript(sampleTranscript)}
             className="console-button"
