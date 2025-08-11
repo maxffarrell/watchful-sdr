@@ -7,6 +7,7 @@ import InsightsPanel from './components/InsightsPanel'
 import GamificationBar from './components/GamificationBar'
 import ScoreVisualizer from './components/ScoreVisualizer'
 import TranscriptUpload from './components/TranscriptUpload'
+import SDRStats from './components/SDRStats'
 import { MetricConfidence, SDRProfile } from './types'
 import { generateMockScores, calculateLeadScore, identifyLowestConfidenceMetrics } from './lib/scoring'
 
@@ -24,6 +25,13 @@ export default function Dashboard() {
     'Arrange technical discussion about Milestone integration and deployment timeline',
   ])
   const [priorityFocus, setPriorityFocus] = useState<string>("Quantify false alarm costs and demonstrate Quill's ROI through guard efficiency gains")
+  const [sdrStats, setSdrStats] = useState({
+    talkRatio: 35,
+    questionsAsked: 8,
+    painPointsUncovered: 3,
+    nextStepsClarity: 7,
+    objectionHandling: 6
+  })
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [profile, setProfile] = useState<SDRProfile>({
     id: '1',
@@ -56,7 +64,7 @@ export default function Dashboard() {
   ].sort((a, b) => b.points - a.points).map((person, index) => ({ ...person, rank: index + 1 }))
 
   useEffect(() => {
-    const lowestConfidence = identifyLowestConfidenceMetrics(scores.confidence, 3)
+    const lowestConfidence = identifyLowestConfidenceMetrics(scores.confidence, 5)
     setValidationQueue(lowestConfidence)
   }, [scores])
 
@@ -118,6 +126,7 @@ export default function Dashboard() {
       console.log("📊 MEDDIC scores received:", analysis.meddicScores)
       console.log("💡 Insights received:", analysis.insights)
       console.log("🎯 Priority Focus received:", analysis.priorityFocus)
+      console.log("📈 SDR Stats received:", analysis.sdrStats)
       
       // Update scores with API results
       console.log("🔄 Updating scores state...")
@@ -132,6 +141,13 @@ export default function Dashboard() {
       console.log("🔄 Updating insights state...")
       setInsights(analysis.insights)
       setPriorityFocus(analysis.priorityFocus || "Quantify false alarm costs and demonstrate Quill's ROI through guard efficiency gains")
+      
+      // Update SDR stats
+      if (analysis.sdrStats) {
+        setSdrStats(analysis.sdrStats)
+        console.log("✅ SDR stats updated")
+      }
+      
       console.log("✅ Insights and priority focus state updated")
       console.log("🎉 Successfully updated UI with Gemini results")
       
@@ -193,127 +209,126 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      {/* Single Column SDR Stats Section */}
+      <SDRStats 
+        {...sdrStats}
+        callsAnalyzed={callsAnalyzed}
+        weeklyGoal={weeklyGoal}
+      />
+
+      {/* Two Column Layout - Lead Score/Insights Left, Validations Right */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        {/* Left Column - Validations & Activity */}
+        {/* Left Column - Lead Score, Analysis & Insights */}
         <div className="space-y-6">
           
-          {/* Activity Gamification */}
-          <div className="console-panel h-fit">
-            <h3 className="text-sm uppercase tracking-wider mb-4 text-console-light border-b border-console-light pb-2">
-              TEAM LEADERBOARD
-            </h3>
-            <div className="mb-4">
-              <div className="text-center mb-4">
-                <div className="text-2xl font-bold text-console-light">#{teamLeaderboard.find(p => p.isCurrentUser)?.rank || 1}</div>
-                <div className="text-xs text-console-gray uppercase">
-                  Your Team Rank • {profile.points > 1200 ? '↗' : profile.points > 1000 ? '→' : '↙'} This Week
-                </div>
+          {/* Discovery Score Card */}
+          <div className="console-panel">
+            <h2 className="text-sm uppercase tracking-wider mb-4 border-b border-console-light pb-2 text-console-light">
+              LEAD QUALIFICATION SCORE
+            </h2>
+            <div className="text-center py-6">
+              <div className="text-5xl font-bold text-console-light mb-2">
+                {overallScore}
               </div>
-              <div className="space-y-2">
-                {teamLeaderboard.slice(0, 5).map((person, index) => (
-                  <div 
-                    key={person.name}
-                    className={`flex justify-between items-center p-2 rounded leaderboard-item ${
-                      person.isCurrentUser 
-                        ? 'bg-console-light bg-opacity-10 border border-console-light' 
-                        : 'bg-console-dark bg-opacity-30 hover:bg-console-light'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={`text-sm font-bold w-6 ${person.isCurrentUser ? 'text-console-light' : 'text-console-gray'}`}>
-                        #{person.rank}
-                      </span>
-                      <span className={`text-sm ${person.isCurrentUser ? 'text-console-light font-medium' : 'text-console-gray'}`}>
-                        {person.name}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4 text-xs">
-                      <span className="text-console-gray">{person.calls} calls</span>
-                      <span className={person.isCurrentUser ? 'text-console-light font-medium' : 'text-console-gray'}>
-                        {person.points}pts
-                      </span>
-                    </div>
-                  </div>
-                ))}
+              <div className="text-sm text-console-gray uppercase">Overall Discovery Score</div>
+              <div className="w-full mt-4 bg-console-dark border border-console-light h-4 relative">
+                <div 
+                  className="absolute top-0 left-0 h-full bg-console-light transition-all duration-500"
+                  style={{ width: `${overallScore}%` }}
+                />
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div>
-                <div className="text-lg font-medium text-console-light">{callsAnalyzed}</div>
-                <div className="text-console-gray uppercase">This Week</div>
+            
+            <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-console-gray">
+              <div className="text-center">
+                <div className="text-lg font-bold text-console-light">
+                  {((scores.confidence.reduce((sum, c) => sum + c.confidence, 0) / scores.confidence.length) * 100).toFixed(0)}%
+                </div>
+                <div className="text-xs text-console-gray uppercase">Confidence Avg</div>
               </div>
-              <div>
-                <div className="text-lg font-medium text-console-light">{profile.streak}</div>
-                <div className="text-console-gray uppercase">Day Streak</div>
-              </div>
-              <div>
-                <div className="text-lg font-medium text-console-light capitalize">{profile.level}</div>
-                <div className="text-console-gray uppercase">Level</div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-console-light">
+                  ${(45 + Math.floor(overallScore / 10) * 5)}K
+                </div>
+                <div className="text-xs text-console-gray uppercase">Deal Potential</div>
               </div>
             </div>
           </div>
 
-          {/* Validations */}
-          <div className="flex-1">
-            <h2 className="text-sm uppercase tracking-wider mb-4 text-console-light border-b border-console-light pb-2">
-              VALIDATION REQUIRED [{validationQueue.length}]
-            </h2>
-            {validationQueue.length > 0 ? (
-              <div className="space-y-4">
-                {validationQueue.map((metric) => (
-                  <ValidationCard
-                    key={metric.metric}
-                    metric={metric}
-                    onValidate={(score, reasoning) => handleValidation(metric.metric, score, reasoning)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="console-panel text-center py-8 text-console-gray">
-                <div className="text-lg mb-2">🎉</div>
-                <div>All validations complete!</div>
-                <div className="text-xs mt-1">+{profile.streak * 5} bonus points for completion</div>
-              </div>
-            )}
+          {/* BANT/MEDDIC Score Visualizer */}
+          <ScoreVisualizer
+            bantScores={scores.bant}
+            meddicScores={scores.meddic}
+            overallScore={overallScore}
+            validationQueue={validationQueue.map(m => m.metric)}
+          />
+          
+          {/* Discovery Insights */}
+          <InsightsPanel 
+            insights={insights} 
+            revenueImpact={45000} 
+            priorityFocus={priorityFocus} 
+          />
+          
+          {/* Team Leaderboard - Smaller, at bottom */}
+          <div className="console-panel">
+            <h3 className="text-xs uppercase tracking-wider mb-3 text-console-gray">
+              Team Rankings
+            </h3>
+            <div className="space-y-1">
+              {teamLeaderboard.slice(0, 3).map((person) => (
+                <div 
+                  key={person.name}
+                  className={`flex justify-between items-center py-1 px-2 text-xs ${
+                    person.isCurrentUser ? 'text-console-light font-medium' : 'text-console-gray'
+                  }`}
+                >
+                  <span>#{person.rank} {person.name}</span>
+                  <span>{person.points}pts</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Right Column - Analysis & Insights */}
-        <div className="space-y-6 h-fit">
-          
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 gap-4">
-            <MetricCard 
-              title="DISCOVERY SCORE" 
-              value={overallScore} 
-              showProgress 
-              progress={overallScore} 
-            />
-            <MetricCard 
-              title="CONFIDENCE AVG" 
-              value={`${((scores.confidence.reduce((sum, c) => sum + c.confidence, 0) / scores.confidence.length) * 100).toFixed(0)}%`} 
-            />
-            <MetricCard 
-              title="REVENUE POTENTIAL" 
-              value={`$${(profile.revenueImpact / 1000).toFixed(0)}K`} 
-            />
-          </div>
-
-          {/* Score Analysis */}
-          <div className="h-fit">
-            <ScoreVisualizer
-              bantScores={scores.bant}
-              meddicScores={scores.meddic}
-              overallScore={overallScore}
-              validationQueue={validationQueue.map(m => m.metric)}
-            />
-          </div>
-          
-          {/* Discovery Insights */}
-          <div className="h-fit">
-            <InsightsPanel insights={insights} revenueImpact={45000} priorityFocus={priorityFocus} />
+        {/* Right Column - Validations */}
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-sm uppercase tracking-wider mb-4 text-console-light border-b border-console-light pb-2">
+              HUMAN VALIDATION REQUIRED [{validationQueue.length}]
+            </h2>
+            <div className="text-xs text-console-gray mb-4">
+              Review AI scores for the {validationQueue.length} lowest confidence metrics
+            </div>
+            
+            {validationQueue.length > 0 ? (
+              <div className="space-y-4">
+                {validationQueue.map((metric, index) => (
+                  <div key={metric.metric} className="relative">
+                    <div className="absolute -left-8 top-4 text-console-gray text-xs">
+                      {index + 1}.
+                    </div>
+                    <ValidationCard
+                      metric={metric}
+                      onValidate={(score, reasoning) => handleValidation(metric.metric, score, reasoning)}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="console-panel text-center py-12 text-console-gray">
+                <div className="text-2xl mb-3">✓</div>
+                <div className="text-console-light text-sm">All validations complete!</div>
+                <div className="text-xs mt-2">+{profile.streak * 5} bonus points earned</div>
+                <button 
+                  onClick={() => setShowUpload(true)}
+                  className="console-button mt-4 text-xs"
+                >
+                  ANALYZE NEXT CALL
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
