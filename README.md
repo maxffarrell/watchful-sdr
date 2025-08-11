@@ -1,6 +1,6 @@
-# WATCHFUL // SDR Intelligence Platform
+# QUILL // SDR Intelligence Platform
 
-AI-powered call analysis and revenue optimization platform for Sales Development Representatives.
+AI-powered security sales call analysis and discovery optimization platform for SDRs selling Quill's security intelligence solutions.
 
 ## Features
 
@@ -43,21 +43,23 @@ npm run build
 npm start
 ```
 
-Open [http://localhost:3001](http://localhost:3001) with your browser to see the application.
+Open [http://localhost:3002](http://localhost:3002) with your browser to see the application.
 
 ## Usage
 
-1. Click "NEW TRANSCRIPT" to upload a call transcript
-2. Review AI-generated BANT & MEDDIC scores (0-10 scale)
-3. Complete required validations for low-confidence metrics
-4. View actionable insights and revenue impact estimates
-5. Monitor accuracy and performance metrics
+1. Click "NEW TRANSCRIPT" to upload a security sales call transcript
+2. Review AI-generated BANT & MEDDIC scores for security discovery (0-10 scale)
+3. Complete required validations for low-confidence security metrics
+4. View security-focused actionable insights and ROI estimates
+5. Compete with team members through leaderboard rankings
 
 ### Key Features
+- **Security-Focused Analysis**: Specialized for security technology sales calls
 - **Required Validations**: System identifies 3 lowest confidence scores for human validation
-- **0-10 Scoring**: All metrics use intuitive 0-10 scale instead of percentages
-- **Gemini Integration**: Real AI analysis using Google's Gemini API
-- **Grid Layout**: Clean 3-column layout for optimal workflow
+- **0-10 Scoring**: All metrics use intuitive 0-10 scale optimized for security discovery
+- **Gemini Integration**: Real AI analysis using Google's Gemini API with security-specific prompts
+- **Competitive Gamification**: Team leaderboard with live rankings and activity tracking
+- **Geist Mono Typography**: Clean, professional monospace font from Google Fonts
 
 ## Scoring Formula
 

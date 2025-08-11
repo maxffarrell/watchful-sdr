@@ -9,7 +9,7 @@
 
     body {
         @apply bg-console-dark text-console-light font-mono;
-        font-family: "Geist", monospace;
+        font-family: "Geist Mono", monospace;
     }
 
     ::-webkit-scrollbar {
@@ -41,7 +41,7 @@
     }
 
     .console-input {
-        @apply w-full px-3 py-2 bg-console-dark border border-console-light text-console-light bg-console-dark focus:outline-none focus:border-console-light focus:ring-1 focus:ring-console-light;
+        @apply w-full px-3 py-2 border border-console-light text-console-light bg-console-dark focus:outline-none focus:border-console-light focus:ring-1 focus:ring-console-light;
     }
 
     .metric-box {

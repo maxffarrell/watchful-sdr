@@ -11,21 +11,25 @@ export default function TranscriptUpload({ onAnalyze }: TranscriptUploadProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
 
   const sampleTranscript = `
-    SDR: Thanks for joining today! I'd love to learn more about your current sales process. Can you walk me through how your team currently handles lead qualification?
+    SDR: Thanks for taking the time today! I understand you're responsible for security operations at your facilities. Can you tell me about your current camera monitoring setup?
     
-    Prospect: Sure. Right now our reps spend about 3-4 hours per day manually researching leads, and honestly, most turn out to be unqualified. It's really inefficient.
+    Prospect: Sure. We have about 150 cameras across three locations, but honestly, we're drowning in false alarms. Our guards are constantly responding to motion from trees, shadows, small animals - it's exhausting.
     
-    SDR: That sounds frustrating. What impact is that having on your team's productivity?
+    SDR: That sounds incredibly frustrating. How many false alarms would you estimate you get per day?
     
-    Prospect: Well, our reps are only making about 40 calls per day instead of the 80 we'd like to see. We're missing our pipeline targets by about 30% each quarter.
+    Prospect: Easily 200-300 false alerts daily. Our team spends 80% of their time just dismissing false positives. We're missing real security events because of all the noise.
     
-    SDR: 30% is significant. Who typically makes the decision on new sales tools in your organization?
+    SDR: Wow, so you're essentially paying guards to watch false alarms instead of actual threats. What's the impact on your operations?
     
-    Prospect: That would be our VP of Sales, Sarah. She'd need to see a clear ROI. Our budget for tools this quarter is around $50,000.
+    Prospect: Huge. Guard burnout is through the roof. We can barely staff two guards per shift to monitor all those cameras. Response time to real incidents has doubled because they're so overwhelmed.
     
-    SDR: Got it. What would need to happen for you to feel confident recommending a solution to Sarah?
+    SDR: Who typically evaluates new security technology in your organization?
     
-    Prospect: I'd need to see how it integrates with our existing Salesforce setup and what kind of time savings we could realistically expect.
+    Prospect: That would be me and our Head of Security, Marcus. Any solution over $100K needs board approval, but we have some flexibility under that threshold.
+    
+    SDR: Got it. If you could eliminate 87% of those false alarms while ensuring you never miss a real threat, what would that mean for your team?
+    
+    Prospect: Game changer. We could actually focus on real security work instead of chasing shadows. But I'd need to see proof it actually works and integrates with our existing Milestone system.
   `
 
   const handleAnalyze = async () => {

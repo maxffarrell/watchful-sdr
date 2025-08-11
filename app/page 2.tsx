@@ -30,19 +30,6 @@ export default function Dashboard() {
   
   const [callsAnalyzed, setCallsAnalyzed] = useState(47)
   const [weeklyGoal] = useState(50)
-  
-  // Mock team data for competitive leaderboard (updates with user's actual points/calls)
-  const baseTeamData = [
-    { name: 'Mike Rodriguez', calls: 52, points: 1240, isCurrentUser: false },
-    { name: 'Jessica Kim', calls: 49, points: 1180, isCurrentUser: false },
-    { name: 'David Park', calls: 45, points: 1050, isCurrentUser: false },
-    { name: 'Amanda Liu', calls: 43, points: 980, isCurrentUser: false },
-  ]
-  
-  const teamLeaderboard = [
-    { name: 'Sarah Chen', calls: callsAnalyzed, points: profile.points, isCurrentUser: true },
-    ...baseTeamData
-  ].sort((a, b) => b.points - a.points).map((person, index) => ({ ...person, rank: index + 1 }))
 
   useEffect(() => {
     const lowestConfidence = identifyLowestConfidenceMetrics(scores.confidence, 3)
@@ -88,17 +75,17 @@ export default function Dashboard() {
   const overallScore = calculateLeadScore(scores.bant, scores.meddic, scores.confidence)
 
   const insights = [
-    'Ask: "What would happen if a real security incident occurred during a shift overwhelmed by false alarms?"',
-    'Schedule demo with Head of Security Marcus to show Quill\'s 87% false alarm reduction',
-    'Send ROI calculator showing guard time savings and incident response improvement',
-    'Arrange technical discussion about Milestone integration and deployment timeline',
+    'Ask: "What happens if you don\'t solve this problem in the next 6 months?"',
+    'Schedule 30-min follow-up with finance stakeholder to discuss budget',
+    'Send discovery questionnaire to map current process and pain points',
+    'Request introduction to technical team member for implementation planning',
   ]
 
   return (
     <div className="min-h-screen p-6 bg-console-dark">
       <header className="mb-8 border-b border-console-light pb-4">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl tracking-wider text-console-light">QUILL // SDR INTELLIGENCE</h1>
+          <h1 className="text-2xl tracking-wider text-console-light">WATCHFUL // SDR INTELLIGENCE</h1>
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setShowUpload(!showUpload)} 
@@ -107,7 +94,7 @@ export default function Dashboard() {
               {showUpload ? 'HIDE UPLOAD' : 'NEW TRANSCRIPT'}
             </button>
             <div className="text-sm text-console-gray">
-              {profile.name} | Rank #{teamLeaderboard.find(p => p.isCurrentUser)?.rank || 1} • {profile.points} pts
+              {profile.name} | {callsAnalyzed}/{weeklyGoal} calls this week
             </div>
           </div>
         </div>
@@ -120,69 +107,49 @@ export default function Dashboard() {
       )}
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
         {/* Left Column - Validations & Activity */}
         <div className="space-y-6">
           
           {/* Activity Gamification */}
-          <div className="console-panel h-fit">
+          <div className="console-panel">
             <h3 className="text-sm uppercase tracking-wider mb-4 text-console-light border-b border-console-light pb-2">
-              TEAM LEADERBOARD
+              WEEKLY ACTIVITY
             </h3>
-            <div className="mb-4">
-              <div className="text-center mb-4">
-                <div className="text-2xl font-bold text-console-light">#{teamLeaderboard.find(p => p.isCurrentUser)?.rank || 1}</div>
-                <div className="text-xs text-console-gray uppercase">
-                  Your Team Rank • {profile.points > 1200 ? '↗' : profile.points > 1000 ? '→' : '↙'} This Week
-                </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-console-light">{callsAnalyzed}</div>
+                <div className="text-xs text-console-gray uppercase">Calls Analyzed</div>
               </div>
-              <div className="space-y-2">
-                {teamLeaderboard.slice(0, 5).map((person, index) => (
-                  <div 
-                    key={person.name}
-                    className={`flex justify-between items-center p-2 rounded leaderboard-item ${
-                      person.isCurrentUser 
-                        ? 'bg-console-light bg-opacity-10 border border-console-light' 
-                        : 'bg-console-dark bg-opacity-30 hover:bg-console-light'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={`text-sm font-bold w-6 ${person.isCurrentUser ? 'text-console-light' : 'text-console-gray'}`}>
-                        #{person.rank}
-                      </span>
-                      <span className={`text-sm ${person.isCurrentUser ? 'text-console-light font-medium' : 'text-console-gray'}`}>
-                        {person.name}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4 text-xs">
-                      <span className="text-console-gray">{person.calls} calls</span>
-                      <span className={person.isCurrentUser ? 'text-console-light font-medium' : 'text-console-gray'}>
-                        {person.points}pts
-                      </span>
-                    </div>
-                  </div>
-                ))}
+              <div className="text-center">
+                <div className="text-2xl font-bold text-console-light">{profile.points}</div>
+                <div className="text-xs text-console-gray uppercase">Total Points</div>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div>
-                <div className="text-lg font-medium text-console-light">{callsAnalyzed}</div>
-                <div className="text-console-gray uppercase">This Week</div>
+            <div className="mb-3">
+              <div className="flex justify-between text-xs mb-1">
+                <span className="text-console-gray">Weekly Goal</span>
+                <span className="text-console-light">{callsAnalyzed}/{weeklyGoal}</span>
               </div>
+              <div className="progress-bar">
+                <div className="progress-fill" style={{ width: `${Math.min(100, (callsAnalyzed / weeklyGoal) * 100)}%` }} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 text-center">
               <div>
                 <div className="text-lg font-medium text-console-light">{profile.streak}</div>
-                <div className="text-console-gray uppercase">Day Streak</div>
+                <div className="text-xs text-console-gray uppercase">Day Streak</div>
               </div>
               <div>
                 <div className="text-lg font-medium text-console-light capitalize">{profile.level}</div>
-                <div className="text-console-gray uppercase">Level</div>
+                <div className="text-xs text-console-gray uppercase">Level</div>
               </div>
             </div>
           </div>
 
           {/* Validations */}
-          <div className="flex-1">
+          <div>
             <h2 className="text-sm uppercase tracking-wider mb-4 text-console-light border-b border-console-light pb-2">
               VALIDATION REQUIRED [{validationQueue.length}]
             </h2>
@@ -207,7 +174,7 @@ export default function Dashboard() {
         </div>
 
         {/* Right Column - Analysis & Insights */}
-        <div className="space-y-6 h-fit">
+        <div className="space-y-6">
           
           {/* Key Metrics */}
           <div className="grid grid-cols-1 gap-4">
@@ -228,18 +195,14 @@ export default function Dashboard() {
           </div>
 
           {/* Score Analysis */}
-          <div className="h-fit">
-            <ScoreVisualizer
-              bantScores={scores.bant}
-              meddicScores={scores.meddic}
-              overallScore={overallScore}
-            />
-          </div>
+          <ScoreVisualizer
+            bantScores={scores.bant}
+            meddicScores={scores.meddic}
+            overallScore={overallScore}
+          />
           
           {/* Discovery Insights */}
-          <div className="h-fit">
-            <InsightsPanel insights={insights} revenueImpact={45000} />
-          </div>
+          <InsightsPanel insights={insights} revenueImpact={45000} />
         </div>
       </div>
     </div>

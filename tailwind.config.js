@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        mono: ["Geist Mono", "monospace"],
+        mono: ["Geist Mono", "ui-monospace", "monospace"],
       },
       colors: {
         "console-dark": "rgb(32, 49, 44)", // 20% darker

@@ -1,19 +1,19 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
-import { BANTScore, MEDDICScore, MetricConfidence } from '@/app/types'
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { BANTScore, MEDDICScore, MetricConfidence } from "@/app/types";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function analyzeTranscriptWithGemini(transcript: string): Promise<{
-  bantScores: BANTScore
-  meddicScores: MEDDICScore
-  confidenceScores: MetricConfidence[]
-  insights: string[]
+  bantScores: BANTScore;
+  meddicScores: MEDDICScore;
+  confidenceScores: MetricConfidence[];
+  insights: string[];
 }> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
-Analyze this DISCOVERY SALES CALL transcript. Focus on how well the SDR uncovered information typically found in discovery calls. Score each criterion from 0-10 (where 10 = excellent discovery).
+Analyze this SECURITY TECHNOLOGY DISCOVERY CALL transcript. Focus on how well the SDR uncovered information about the prospect's security operations and pain points. Score each criterion from 0-10 (where 10 = excellent security discovery).
 
 TRANSCRIPT:
 ${transcript}
@@ -59,58 +59,60 @@ Respond in JSON format:
     {"metric": "champion", "confidence": <0-1>}
   ],
   "insights": [
-    "Next step discovery question to ask",
-    "Follow-up meeting recommendation",
-    "Key stakeholder to engage next"
+    "Security-specific discovery question to ask",
+    "Demo or technical discussion recommendation",
+    "Key security stakeholder to engage next"
   ]
 }
-`
+`;
 
-    const result = await model.generateContent(prompt)
-    const response = await result.response
-    const text = response.text()
-    
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
     // Parse the JSON response
-    const jsonStart = text.indexOf('{')
-    const jsonEnd = text.lastIndexOf('}') + 1
-    const jsonText = text.slice(jsonStart, jsonEnd)
-    
-    const parsed = JSON.parse(jsonText)
-    
+    const jsonStart = text.indexOf("{");
+    const jsonEnd = text.lastIndexOf("}") + 1;
+    const jsonText = text.slice(jsonStart, jsonEnd);
+
+    const parsed = JSON.parse(jsonText);
+
     // Transform confidence scores to include score and AI flag
-    const confidenceScores: MetricConfidence[] = parsed.confidence.map((conf: any) => ({
-      metric: conf.metric,
-      score: parsed.bant[conf.metric] || parsed.meddic[conf.metric] || 0,
-      confidence: conf.confidence,
-      aiGenerated: true,
-    }))
-    
+    const confidenceScores: MetricConfidence[] = parsed.confidence.map(
+      (conf: any) => ({
+        metric: conf.metric,
+        score: parsed.bant[conf.metric] || parsed.meddic[conf.metric] || 0,
+        confidence: conf.confidence,
+        aiGenerated: true,
+      }),
+    );
+
     return {
       bantScores: parsed.bant,
       meddicScores: parsed.meddic,
       confidenceScores,
       insights: parsed.insights,
-    }
+    };
   } catch (error) {
-    console.error('Gemini API error:', error)
+    console.error("Gemini API error:", error);
     // Fallback to mock data
-    return generateFallbackScores()
+    return generateFallbackScores();
   }
 }
 
 function generateFallbackScores(): {
-  bantScores: BANTScore
-  meddicScores: MEDDICScore
-  confidenceScores: MetricConfidence[]
-  insights: string[]
+  bantScores: BANTScore;
+  meddicScores: MEDDICScore;
+  confidenceScores: MetricConfidence[];
+  insights: string[];
 } {
   const bantScores: BANTScore = {
     budget: Math.floor(Math.random() * 11),
     authority: Math.floor(Math.random() * 11),
     need: Math.floor(Math.random() * 11),
     timeline: Math.floor(Math.random() * 11),
-  }
-  
+  };
+
   const meddicScores: MEDDICScore = {
     metrics: Math.floor(Math.random() * 11),
     economicBuyer: Math.floor(Math.random() * 11),
@@ -118,8 +120,8 @@ function generateFallbackScores(): {
     decisionProcess: Math.floor(Math.random() * 11),
     identifyPain: Math.floor(Math.random() * 11),
     champion: Math.floor(Math.random() * 11),
-  }
-  
+  };
+
   const confidenceScores: MetricConfidence[] = [
     ...Object.entries(bantScores).map(([key, score]) => ({
       metric: key,
@@ -133,18 +135,18 @@ function generateFallbackScores(): {
       confidence: Math.random() * 0.6 + 0.3,
       aiGenerated: true,
     })),
-  ]
-  
+  ];
+
   const insights = [
-    'Ask: "Who else would be involved in evaluating a solution like this?"',
-    'Schedule follow-up with decision maker to discuss budget parameters',
-    'Send ROI calculator and request 30-min session to review impact metrics',
-  ]
-  
+    'Ask: "How do you currently measure the cost of false alarms on your operations?"',
+    "Schedule technical demo showing Quill's integration with existing camera systems",
+    "Send case study of similar facility that reduced false alarms by 87%",
+  ];
+
   return {
     bantScores,
     meddicScores,
     confidenceScores,
     insights,
-  }
+  };
 }
