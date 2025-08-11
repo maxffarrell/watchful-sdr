@@ -11,9 +11,20 @@ import { MetricConfidence, SDRProfile } from './types'
 import { generateMockScores, calculateLeadScore, identifyLowestConfidenceMetrics } from './lib/scoring'
 
 export default function Dashboard() {
+  console.log("=== DASHBOARD COMPONENT MOUNT ===")
+  console.log("🏠 Dashboard component is mounting...")
+  
   const [scores, setScores] = useState(generateMockScores())
   const [validationQueue, setValidationQueue] = useState<MetricConfidence[]>([])
   const [showUpload, setShowUpload] = useState(false)
+  const [insights, setInsights] = useState<string[]>([
+    'Ask: "What would happen if a real security incident occurred during a shift overwhelmed by false alarms?"',
+    'Schedule demo with Head of Security Marcus to show Quill\'s 87% false alarm reduction',
+    'Send ROI calculator showing guard time savings and incident response improvement',
+    'Arrange technical discussion about Milestone integration and deployment timeline',
+  ])
+  const [priorityFocus, setPriorityFocus] = useState<string>("Quantify false alarm costs and demonstrate Quill's ROI through guard efficiency gains")
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [profile, setProfile] = useState<SDRProfile>({
     id: '1',
     name: 'Sarah Chen',
@@ -72,27 +83,90 @@ export default function Dashboard() {
     }))
   }
 
-  const handleTranscriptAnalyzed = (transcript: string) => {
-    const newScores = generateMockScores()
-    setScores(newScores)
+  const handleTranscriptAnalyzed = async (transcript: string) => {
+    console.log("=== HANDLE TRANSCRIPT ANALYZED DEBUG START ===")
+    console.log("🔄 handleTranscriptAnalyzed called!")
+    console.log("📝 Transcript received:", transcript.substring(0, 100) + "...")
+    console.log("📏 Transcript length:", transcript.length)
+    console.log("🔄 Current isAnalyzing state:", isAnalyzing)
+    
+    console.log("⏳ Setting isAnalyzing to true...")
+    setIsAnalyzing(true)
+    console.log("✅ isAnalyzing set to true")
+    
+    try {
+      console.log("🤖 About to call API route /api/analyze...")
+      
+      // Call the API route instead of calling Gemini directly
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transcript }),
+      })
+      
+      console.log("📥 Received response from API:", response)
+      console.log("📊 Response status:", response.status)
+      console.log("📊 Response ok:", response.ok)
+      
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`)
+      }
+      
+      const analysis = await response.json()
+      console.log("📥 Parsed analysis from API:", analysis)
+      console.log("📊 BANT scores received:", analysis.bantScores)
+      console.log("📊 MEDDIC scores received:", analysis.meddicScores)
+      console.log("💡 Insights received:", analysis.insights)
+      console.log("🎯 Priority Focus received:", analysis.priorityFocus)
+      
+      // Update scores with API results
+      console.log("🔄 Updating scores state...")
+      setScores({
+        bant: analysis.bantScores,
+        meddic: analysis.meddicScores,
+        confidence: analysis.confidenceScores
+      })
+      console.log("✅ Scores state updated")
+      
+      // Update insights with Gemini-generated insights
+      console.log("🔄 Updating insights state...")
+      setInsights(analysis.insights)
+      setPriorityFocus(analysis.priorityFocus || "Quantify false alarm costs and demonstrate Quill's ROI through guard efficiency gains")
+      console.log("✅ Insights and priority focus state updated")
+      console.log("🎉 Successfully updated UI with Gemini results")
+      
+    } catch (error) {
+      console.error('❌ MAJOR ERROR: Failed to analyze with Gemini:', error)
+      console.error('❌ Error type:', typeof error)
+      console.error('❌ Error message:', error.message)
+      console.error('❌ Error stack:', error.stack)
+      console.error('❌ Full error object:', JSON.stringify(error, null, 2))
+      
+      // Fallback to mock scores if Gemini fails
+      console.log("⚠️ Using mock scores as fallback...")
+      const newScores = generateMockScores()
+      console.log("📊 Generated mock scores:", newScores)
+      setScores(newScores)
+      console.log("✅ Mock scores set")
+    }
+    
+    console.log("🔄 Cleaning up states...")
     setShowUpload(false)
     setCallsAnalyzed(prev => prev + 1)
+    setIsAnalyzing(false)
+    console.log("✅ States cleaned up")
     
     // Bonus points for analyzing calls
+    console.log("🎯 Adding bonus points...")
     setProfile(prev => ({
       ...prev,
       points: prev.points + 25,
     }))
+    console.log("✅ Bonus points added")
+    console.log("=== HANDLE TRANSCRIPT ANALYZED DEBUG END ===")
   }
 
   const overallScore = calculateLeadScore(scores.bant, scores.meddic, scores.confidence)
-
-  const insights = [
-    'Ask: "What would happen if a real security incident occurred during a shift overwhelmed by false alarms?"',
-    'Schedule demo with Head of Security Marcus to show Quill\'s 87% false alarm reduction',
-    'Send ROI calculator showing guard time savings and incident response improvement',
-    'Arrange technical discussion about Milestone integration and deployment timeline',
-  ]
 
   return (
     <div className="min-h-screen p-6 bg-console-dark">
@@ -115,7 +189,7 @@ export default function Dashboard() {
 
       {showUpload && (
         <div className="mb-8">
-          <TranscriptUpload onAnalyze={handleTranscriptAnalyzed} />
+          <TranscriptUpload onAnalyze={handleTranscriptAnalyzed} isAnalyzing={isAnalyzing} />
         </div>
       )}
 
@@ -239,7 +313,7 @@ export default function Dashboard() {
           
           {/* Discovery Insights */}
           <div className="h-fit">
-            <InsightsPanel insights={insights} revenueImpact={45000} />
+            <InsightsPanel insights={insights} revenueImpact={45000} priorityFocus={priorityFocus} />
           </div>
         </div>
       </div>

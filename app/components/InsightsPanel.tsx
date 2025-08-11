@@ -3,9 +3,10 @@
 interface InsightsPanelProps {
   insights: string[]
   revenueImpact?: number
+  priorityFocus?: string
 }
 
-export default function InsightsPanel({ insights, revenueImpact }: InsightsPanelProps) {
+export default function InsightsPanel({ insights, revenueImpact, priorityFocus }: InsightsPanelProps) {
   return (
     <div className="console-panel">
       <h2 className="text-sm uppercase tracking-wider mb-4 border-b border-console-light pb-2 text-console-light">
@@ -33,7 +34,7 @@ export default function InsightsPanel({ insights, revenueImpact }: InsightsPanel
         
         <div className="mt-4 pt-4 border-t border-console-gray">
           <h3 className="text-xs uppercase text-console-gray mb-2">PRIORITY FOCUS:</h3>
-          <p className="text-sm">Quantify false alarm costs and demonstrate Quill's ROI through guard efficiency gains</p>
+          <p className="text-sm">{priorityFocus || "Quantify false alarm costs and demonstrate Quill's ROI through guard efficiency gains"}</p>
         </div>
       </div>
     </div>

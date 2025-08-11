@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { MetricConfidence } from '@/app/types'
+import MetricTooltip from './MetricTooltip'
 
 interface ValidationCardProps {
   metric: MetricConfidence
@@ -27,7 +28,9 @@ export default function ValidationCard({ metric, onValidate }: ValidationCardPro
     <div className="console-panel mb-4">
       <div className="mb-4">
         <h3 className="text-sm uppercase tracking-wider mb-1 text-console-light">
-          VALIDATE: {formatMetricName(metric.metric)}
+          <MetricTooltip metric={metric.metric}>
+            <span className="cursor-help">VALIDATE: {formatMetricName(metric.metric)}</span>
+          </MetricTooltip>
         </h3>
         <div className="text-console-gray text-xs mb-3">
           AI Score: {metric.score}/10 | Confidence: {(metric.confidence * 100).toFixed(0)}%

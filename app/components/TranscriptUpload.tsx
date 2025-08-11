@@ -3,12 +3,20 @@
 import { useState } from 'react'
 
 interface TranscriptUploadProps {
-  onAnalyze: (transcript: string) => void
+  onAnalyze: (transcript: string) => Promise<void>
+  isAnalyzing?: boolean
 }
 
-export default function TranscriptUpload({ onAnalyze }: TranscriptUploadProps) {
+export default function TranscriptUpload({ onAnalyze, isAnalyzing: externalAnalyzing = false }: TranscriptUploadProps) {
+  console.log("🎬 TranscriptUpload component rendering...");
   const [transcript, setTranscript] = useState('')
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const isAnalyzing = externalAnalyzing
+  
+  console.log("📊 TranscriptUpload render state:", {
+    transcript: transcript.length,
+    isAnalyzing,
+    onAnalyze: typeof onAnalyze
+  });
 
   const sampleTranscript = `
     SDR: Thanks for taking the time today! I understand you're responsible for security operations at your facilities. Can you tell me about your current camera monitoring setup?
@@ -33,30 +41,31 @@ export default function TranscriptUpload({ onAnalyze }: TranscriptUploadProps) {
   `
 
   const handleAnalyze = async () => {
-    if (!transcript.trim()) return
+    console.log("=== TRANSCRIPT UPLOAD DEBUG START ===")
+    console.log("🎯 TranscriptUpload: Analyze button clicked")
+    console.log("📝 Full transcript:", transcript)
+    console.log("📝 Transcript length:", transcript.length)
+    console.log("📝 Trimmed length:", transcript.trim().length)
+    console.log("🔄 isAnalyzing state:", isAnalyzing)
+    console.log("🔧 onAnalyze function:", typeof onAnalyze)
     
-    setIsAnalyzing(true)
-    try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transcript }),
-      })
-      
-      if (!response.ok) {
-        throw new Error('Analysis failed')
-      }
-      
-      const data = await response.json()
-      onAnalyze(transcript)
-      console.log('Analysis result:', data)
-    } catch (error) {
-      console.error('Analysis failed:', error)
-      // Continue with mock data on error
-      onAnalyze(transcript)
-    } finally {
-      setIsAnalyzing(false)
+    if (!transcript.trim()) {
+      console.log("⚠️ Empty transcript, aborting")
+      return
     }
+    
+    try {
+      console.log("🚀 TranscriptUpload: About to call onAnalyze with transcript...")
+      console.log("📤 Sending transcript:", transcript.substring(0, 200) + "...")
+      const result = await onAnalyze(transcript)
+      console.log("📥 onAnalyze result:", result)
+      console.log("✅ TranscriptUpload: onAnalyze completed successfully")
+    } catch (error) {
+      console.error('❌ TranscriptUpload: Analysis failed:', error)
+      console.error('❌ Error stack:', error.stack)
+      console.error('❌ Error details:', JSON.stringify(error, null, 2))
+    }
+    console.log("=== TRANSCRIPT UPLOAD DEBUG END ===")
   }
 
   return (
@@ -80,7 +89,10 @@ export default function TranscriptUpload({ onAnalyze }: TranscriptUploadProps) {
         
         <div className="flex gap-2">
           <button
-            onClick={handleAnalyze}
+            onClick={() => {
+              console.log("🔥🔥🔥 BUTTON CLICKED!!! 🔥🔥🔥");
+              handleAnalyze();
+            }}
             disabled={isAnalyzing || !transcript.trim()}
             className="console-button"
           >

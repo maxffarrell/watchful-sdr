@@ -8,9 +8,23 @@ export async function analyzeTranscriptWithGemini(transcript: string): Promise<{
   meddicScores: MEDDICScore;
   confidenceScores: MetricConfidence[];
   insights: string[];
+  priorityFocus: string;
 }> {
+  console.log("=== GEMINI API FUNCTION DEBUG START ===")
+  console.log("🚀 analyzeTranscriptWithGemini called!")
+  console.log("📝 Input transcript:", transcript)
+  console.log("📏 Transcript length:", transcript.length)
+  console.log("🔧 Function parameters type check:", typeof transcript)
+  
+  console.log("🔑 Checking environment variables...")
+  console.log("🔑 GEMINI_API_KEY from process.env:", process.env.GEMINI_API_KEY ? `Present (${process.env.GEMINI_API_KEY.substring(0, 10)}...)` : "Missing")
+  console.log("🔧 genAI object:", genAI)
+  
   try {
+    console.log("🤖 Initializing Gemini model...")
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    console.log("✅ Gemini model initialized successfully")
+    console.log("🔧 Model object:", model);
 
     const prompt = `
 Analyze this SECURITY TECHNOLOGY DISCOVERY CALL transcript. Focus on how well the SDR uncovered information about the prospect's security operations and pain points. Score each criterion from 0-10 (where 10 = excellent security discovery).
@@ -62,13 +76,27 @@ Respond in JSON format:
     "Security-specific discovery question to ask",
     "Demo or technical discussion recommendation",
     "Key security stakeholder to engage next"
-  ]
+  ],
+  "priorityFocus": "Single most important action to move this deal forward, focusing on quantifiable security value"
 }
 `;
 
+    console.log("📤 About to send prompt to Gemini API...")
+    console.log("📝 Full prompt being sent:", prompt)
+    console.log("📏 Prompt length:", prompt.length)
+    
+    console.log("🚀 Calling model.generateContent...")
     const result = await model.generateContent(prompt);
+    console.log("📥 Received result object from Gemini API:", result)
+    
+    console.log("🔄 Getting response from result...")
     const response = await result.response;
+    console.log("📋 Response object:", response)
+    
+    console.log("🔄 Extracting text from response...")
     const text = response.text();
+    console.log("📋 Raw Gemini response text:", text)
+    console.log("📏 Response text length:", text.length);
 
     // Parse the JSON response
     const jsonStart = text.indexOf("{");
@@ -76,6 +104,7 @@ Respond in JSON format:
     const jsonText = text.slice(jsonStart, jsonEnd);
 
     const parsed = JSON.parse(jsonText);
+    console.log("🎯 Parsed Gemini data:", parsed);
 
     // Transform confidence scores to include score and AI flag
     const confidenceScores: MetricConfidence[] = parsed.confidence.map(
@@ -87,17 +116,36 @@ Respond in JSON format:
       }),
     );
 
+    console.log("✨ Successfully processed Gemini response");
+    console.log("📊 BANT scores:", parsed.bant);
+    console.log("📊 MEDDIC scores:", parsed.meddic); 
+    console.log("💡 Insights:", parsed.insights);
+    console.log("🎯 Priority Focus:", parsed.priorityFocus);
+
     return {
       bantScores: parsed.bant,
       meddicScores: parsed.meddic,
       confidenceScores,
       insights: parsed.insights,
+      priorityFocus: parsed.priorityFocus || "Quantify false alarm costs and demonstrate Quill's ROI through guard efficiency gains",
     };
   } catch (error) {
-    console.error("Gemini API error:", error);
+    console.error("❌❌❌ GEMINI API MAJOR ERROR ❌❌❌");
+    console.error("❌ Error object:", error);
+    console.error("❌ Error type:", typeof error);
+    console.error("❌ Error name:", error.name);
+    console.error("❌ Error message:", error.message);
+    console.error("❌ Error stack:", error.stack);
+    console.error("❌ Error cause:", error.cause);
+    console.error("❌ Full error JSON:", JSON.stringify(error, null, 2));
+    console.log("⚠️ Falling back to mock data");
     // Fallback to mock data
-    return generateFallbackScores();
+    const fallback = generateFallbackScores();
+    console.log("📊 Generated fallback scores:", fallback);
+    console.log("=== GEMINI API FUNCTION DEBUG END (ERROR) ===");
+    return fallback;
   }
+  console.log("=== GEMINI API FUNCTION DEBUG END (SUCCESS) ===");
 }
 
 function generateFallbackScores(): {
@@ -105,6 +153,7 @@ function generateFallbackScores(): {
   meddicScores: MEDDICScore;
   confidenceScores: MetricConfidence[];
   insights: string[];
+  priorityFocus: string;
 } {
   const bantScores: BANTScore = {
     budget: Math.floor(Math.random() * 11),
@@ -142,11 +191,14 @@ function generateFallbackScores(): {
     "Schedule technical demo showing Quill's integration with existing camera systems",
     "Send case study of similar facility that reduced false alarms by 87%",
   ];
+  
+  const priorityFocus = "Quantify the cost of 200-300 daily false alarms in guard hours and demonstrate ROI of 87% reduction";
 
   return {
     bantScores,
     meddicScores,
     confidenceScores,
     insights,
+    priorityFocus,
   };
 }
