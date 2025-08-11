@@ -18,7 +18,7 @@ export default function Dashboard() {
   
   const [scores, setScores] = useState(generateMockScores())
   const [validationQueue, setValidationQueue] = useState<MetricConfidence[]>([])
-  const [showUpload, setShowUpload] = useState(false)
+  const [showUpload, setShowUpload] = useState(true)
   const [insights, setInsights] = useState<string[]>([
     'Ask: "What would happen if a real security incident occurred during a shift overwhelmed by false alarms?"',
     'Schedule demo with Head of Security Marcus to show Quill\'s 87% false alarm reduction',
